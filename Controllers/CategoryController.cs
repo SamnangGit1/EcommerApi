@@ -56,7 +56,7 @@ namespace Eletronic_Api.Controllers
             }
             else
             {
-                category.Image = "/Images/defaul.jpg";
+                category.Image = "/defaul.jpg";
             }
             _dbcontext.Categories.Add(category);
             var saveResult = _dbcontext.SaveChanges() > 0;
