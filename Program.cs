@@ -28,6 +28,7 @@ builder.Services.AddDbContext<APIContext>(options =>
 
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>

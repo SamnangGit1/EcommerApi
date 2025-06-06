@@ -10,6 +10,7 @@ namespace Eletronic_Api.Data
 
             public DbSet<Customers> Customers { get; set; }
             public DbSet<Category> Categories { get; set; }
-        
+            public DbSet<Brand> Brands { get; set; }
+
     }
 }
