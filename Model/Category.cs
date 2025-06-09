@@ -16,6 +16,7 @@ namespace Eletronic_Api.Model
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
         public bool Status { get; set; } = true;
+        public ICollection<Item>? Items { get; set; }
 
     }
 }

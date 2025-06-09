@@ -8,12 +8,24 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Include="Images\03cab473-635c-43e3-871a-24731c873f5a.jpg" />
+	  <Content Include="Images\38d105b4-803e-43b6-a3e4-e3d6520ab59d.png" />
+	  <Content Include="Images\3a0b7dd5-9531-4a07-83ee-839aa760856b.jpg" />
+	  <Content Include="Images\ddda6603-d2b3-45f8-8dd4-41eadb33b08e.svg" />
+	  <Content Include="Images\defaul.jpg" />
+	  <Content Include="Images\f1319ede-b7fd-45c1-933e-945ab0b0e0b3.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.5" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\" />
 	</ItemGroup>
 
 </Project>

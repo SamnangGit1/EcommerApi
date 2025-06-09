@@ -12,7 +12,7 @@ namespace Eletronic_Api.Model
         public string? Image { get; set; }
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
-
+        public ICollection<Item>? Items { get; set; }
 
     }
 }

@@ -28,6 +28,16 @@ namespace Eletronic_Api.Controllers
             var brand=_dbcontext.Brands.ToList();
             return Ok(brand);
         }
+        [HttpGet("{id}/Images")]
+        public IActionResult GetImage(int id)
+        {
+            var imagePath = Path.Combine("Images", "category_" + id + ".jpg");
+            if (!System.IO.File.Exists(imagePath))
+                return NotFound();
+
+            var imageFileStream = System.IO.File.OpenRead(imagePath);
+            return File(imageFileStream, "imagse/jpeg");
+        }
 
         [HttpGet("{id}")]
         public IActionResult Get(int id )
