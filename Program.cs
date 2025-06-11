@@ -1,6 +1,3 @@
-// The issue with the line `System.Net.Sockets.SocketException: 'The requested address is not valid in its context'`  
-// is that it is not valid C# syntax. It appears to be a misplaced or incorrectly written statement.  
-// Below is the corrected code after removing the invalid line and ensuring proper syntax.  
 
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -9,10 +6,27 @@ using Eletronic_Api.Data;
 using Eletronic_Api.Repository.Abastract;
 using Eletronic_Api.Repository.Implementation;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services  
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+        };
+    });
+
+
 builder.Services.AddControllers()
    .AddJsonOptions(options =>
    {
@@ -34,6 +48,9 @@ builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
 builder.Services.AddTransient<IItemRepository, ItemRepository>();
+builder.Services.AddTransient<IAppUserRepository, AppUserRepository>();
+
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
@@ -67,6 +84,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

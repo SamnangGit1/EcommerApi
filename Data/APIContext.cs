@@ -13,8 +13,11 @@ namespace Eletronic_Api.Data
         public DbSet<Brand> Brands { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+      public DbSet<AppUser> AppUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+       
             modelBuilder.Entity<Item>()
            .HasOne(s => s.Category)
            .WithMany(g => g.Items)
