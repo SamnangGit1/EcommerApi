@@ -22,9 +22,32 @@ namespace Eletronic_Api.Controllers
             _itemsReposity = itemsReposity;
         }
 
+        [HttpGet("Category/{categoryId}")]
+        public IActionResult GetItemsByCategory(int categoryId)
+        {
+            var items = _dbcontext.Items
+                .Include(i => i.Category)
+                .Include(i => i.Brand)
+                .Include(i => i.Promotion)
+                .Where(i => i.CategoryID == categoryId)
+                .ToList();
+
+            return Ok(items);
+        }
+
+        [HttpGet("Brand/{brandId}")]
+        public IActionResult GetItemsByBrand(int brandId)
+        {
+            var items = _dbcontext.Items
+                .Include(i => i.Category)
+                .Include(i => i.Brand)
+                .Include(i => i.Promotion)
+                .Where(i => i.BrandID == brandId)
+                .ToList();
+            return Ok(items);
+        }
 
         [HttpGet]
-       
         public IActionResult Index()
         {
             var items = _dbcontext.Items

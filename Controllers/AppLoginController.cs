@@ -31,7 +31,6 @@ namespace Eletronic_Api.Controllers
         [HttpPost()]
         public IActionResult Login([FromBody] AppUser request)
         {
-            // Check username & password from database
             var user = _context.AppUsers
                 .FirstOrDefault(u => u.UserName == request.UserName && u.Password == request.Password);
 
@@ -82,7 +81,7 @@ namespace Eletronic_Api.Controllers
             _context.AppUsers.Add(appUser);
             _context.SaveChanges();
 
-            return Ok("User registered successfully");
+            return Ok(new { Message = "User registered successfully" });
         }
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromForm] AppUser appUser)
@@ -106,7 +105,7 @@ namespace Eletronic_Api.Controllers
 
             _context.SaveChanges();
 
-            return Ok("User updated successfully");
+            return Ok(new { Message = "User updated successfully" });
         }
 
 
