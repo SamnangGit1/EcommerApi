@@ -14,6 +14,7 @@ namespace Eletronic_Api.Data
         public DbSet<Item> Items { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
       public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<OtpStore> OtpStores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -20,12 +20,15 @@ namespace Eletronic_Api.Controllers
         private readonly IFileService _fileService;
         private readonly IConfiguration _configuration;
 
-        public AppLoginController(APIContext context, IConfiguration configuration,IAppUserRepository appUserRepository, IFileService fileService)
+        private readonly IEmailService _emailService;
+        public AppLoginController(APIContext context, IConfiguration configuration,IAppUserRepository appUserRepository, IFileService fileService, IEmailService emailService)
         {
             _context = context;
             _configuration = configuration;
             this.appUserRepository = appUserRepository;
             _fileService = fileService;
+            _emailService = emailService;
+        
         }
 
         [HttpPost()]
@@ -37,16 +40,16 @@ namespace Eletronic_Api.Controllers
             if (user == null)
                 return Unauthorized("Invalid username or password");
 
-            // Generate JWT token
+            // Generate JWT token  
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                    new Claim(ClaimTypes.Email, user.Email ?? "")
-                }),
+                   new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                   new Claim(ClaimTypes.Email, user.Email ?? ""),
+               }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -60,6 +63,7 @@ namespace Eletronic_Api.Controllers
                 username = user.UserName,
                 email = user.Email,
                 profile = user.Profile
+               
             });
         }
 
@@ -107,7 +111,67 @@ namespace Eletronic_Api.Controllers
 
             return Ok(new { Message = "User updated successfully" });
         }
+        [HttpPost("send-otp")]
+        public IActionResult SendOtp([FromBody] AppUser request)
+        {
+            var user = _context.AppUsers.FirstOrDefault(u => u.Email == request.Email);
+            if (user == null) return NotFound("Email not registered");
+
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            _context.OtpStores.Add(new OtpStore
+            {
+                Email = request.Email,
+                Otp = otp,
+                ExpiryTime = DateTime.Now.AddMinutes(5)
+            });
+            _context.SaveChanges();
+
+            _emailService.SendOtp(request.Email, otp);
+            return Ok("OTP sent to email");
+        }
+        [HttpPost("verify-otp")]
+        public IActionResult VerifyOtp([FromBody] OtpVerifyRequest request)
+        {
+            var otpEntry = _context.OtpStores
+                .Where(x => x.Email == request.Email && x.Otp == request.Otp)
+                .OrderByDescending(x => x.ExpiryTime)
+                .FirstOrDefault();
+
+            if (otpEntry == null || otpEntry.ExpiryTime < DateTime.Now)
+                return BadRequest("Invalid or expired OTP");
+
+            var user = _context.AppUsers.FirstOrDefault(u => u.Email == request.Email);
+            if (user == null) return NotFound("User not found");
+
+   
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, user.UserName ?? ""),
+            new Claim(ClaimTypes.Email, user.Email ?? "")
+        }),
+                Expires = DateTime.UtcNow.AddDays(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwt = tokenHandler.WriteToken(token);
+
+            return Ok(new
+            {
+                token = jwt,
+                username = user.UserName,
+                email = user.Email,
+                profile = user.Profile
+            });
+        }
+
 
 
     }
+
 }
