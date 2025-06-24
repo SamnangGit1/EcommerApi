@@ -18,11 +18,7 @@ namespace Eletronic_Api.Model
 
         public string? Description { get; set; }
 
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
-
         public bool IsActive { get; set; }
-        public ICollection<Item>? Items { get; set; }
+        public ICollection<ItemDetail>? ItemDetails { get; set; }
     }
 }

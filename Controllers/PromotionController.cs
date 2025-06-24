@@ -39,7 +39,7 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] Promotion promotion)
+        public IActionResult Post([FromForm] Promotion promotion)
         {
             if (!ModelState.IsValid)
             {
@@ -52,7 +52,7 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Promotion promotion)
+        public IActionResult Put(int id, [FromForm] Promotion promotion)
         {
             if (!ModelState.IsValid)
             {
@@ -69,8 +69,7 @@ namespace Eletronic_Api.Controllers
             existingPromotion.DiscountType = promotion.DiscountType;
             existingPromotion.DiscountValue = promotion.DiscountValue;
             existingPromotion.Description = promotion.Description;
-            existingPromotion.StartDate = promotion.StartDate;
-            existingPromotion.EndDate = promotion.EndDate;
+ 
             existingPromotion.IsActive = promotion.IsActive;
 
             _dbcontext.SaveChanges();

@@ -28,7 +28,7 @@ namespace Eletronic_Api.Controllers
             var items = _dbcontext.Items
                 .Include(i => i.Category)
                 .Include(i => i.Brand)
-                .Include(i => i.Promotion)
+        
                 .Where(i => i.CategoryID == categoryId)
                 .ToList();
 
@@ -41,7 +41,7 @@ namespace Eletronic_Api.Controllers
             var items = _dbcontext.Items
                 .Include(i => i.Category)
                 .Include(i => i.Brand)
-                .Include(i => i.Promotion)
+            
                 .Where(i => i.BrandID == brandId)
                 .ToList();
             return Ok(items);
@@ -53,7 +53,7 @@ namespace Eletronic_Api.Controllers
             var items = _dbcontext.Items
                  .Include(i => i.Category)
                  .Include(i => i.Brand)
-                 .Include(i => i.Promotion)
+
                  .OrderBy(i => i.ItemName)
                  .ToList();
             return Ok(items);
@@ -61,7 +61,7 @@ namespace Eletronic_Api.Controllers
         [HttpGet("{id}")]
         public IActionResult Detail(int id)
         {
-            var items = _dbcontext.Items.Include(i => i.Category).Include(i => i.Brand).Include(i => i.Promotion).FirstOrDefault(i => i.ItemID == id);
+            var items = _dbcontext.Items.Include(i => i.Category).Include(i => i.Brand).FirstOrDefault(i => i.ItemID == id);
             if (items == null)
             {
                 return NotFound(new { message = "Item not found" });
@@ -119,27 +119,7 @@ namespace Eletronic_Api.Controllers
                 }
                 item.BrandID = brand.BrandID;
             }
-            if (item.PromotionID == 0 && !string.IsNullOrEmpty(item.Promotion?.PromotionName))
-            {
-                var promotion = _dbcontext.Promotions.FirstOrDefault(c => c.PromotionName == item.Promotion.PromotionName);
-                if (promotion == null)
-                {
-                    promotion = new Promotion
-                    {
-                        PromotionName = item.Promotion.PromotionName,
-                        DiscountType = item.Promotion.DiscountType,
-                        DiscountValue = item.Promotion.DiscountValue,
-                        Description = item.Promotion.Description ?? "No description",
-                        StartDate = item.Promotion.StartDate,
-                        EndDate = item.Promotion.EndDate,
-                        IsActive = item.Promotion.IsActive
-                    };
-                   
-                    _dbcontext.Promotions.Add(promotion);
-                    _dbcontext.SaveChanges();
-                }
-                item.PromotionID = promotion.PromotionID;
-            }
+      
             else if (item.CategoryID == 0)
             {
                 return BadRequest(new { message = "Category is required" });
@@ -148,11 +128,7 @@ namespace Eletronic_Api.Controllers
             {
                 return BadRequest(new { message = "Brand is required" });
             }
-            else if (item.PromotionID == 0)
-            {
-                return BadRequest(new { message = "Promotion is required" });
-            }
-
+           
 
             if (_itemsReposity.Add(item))
             {
@@ -219,33 +195,8 @@ namespace Eletronic_Api.Controllers
             {
                 existingItem.BrandID = item.BrandID;
             }
-            if (item.PromotionID == 0 && !string.IsNullOrEmpty(item.Promotion?.PromotionName))
-            {
-                var promotion = _dbcontext.Promotions .FirstOrDefault(c => c.PromotionName == item.Promotion.PromotionName);
-                if (promotion == null)
-                {
-                    promotion = new Promotion
-                    {
-                        PromotionName = item.Promotion.PromotionName,
-                        DiscountType = item.Promotion.DiscountType,
-                        DiscountValue = item.Promotion.DiscountValue,
-                        Description = item.Promotion.Description ?? "No description",
-                        StartDate = item.Promotion.StartDate,
-                        EndDate = item.Promotion.EndDate,
-                        IsActive = item.Promotion.IsActive
-                    };  
-                  
-                    _dbcontext.Promotions.Add(promotion);
-                    _dbcontext.SaveChanges();
-                }
-                existingItem.PromotionID = promotion.PromotionID;
-            }
-            else
-            {
-                existingItem.BrandID = item.BrandID;
-            }
-
-
+            
+ 
             existingItem.ItemName = item.ItemName;
             existingItem.StockQuantity = item.StockQuantity;
             existingItem.Price = item.Price;

@@ -7,7 +7,6 @@ namespace Eletronic_Api.Model
         public int ItemID { get; set; }
         public int BrandID { get; set; }
         public int CategoryID { get; set; }
-        public int PromotionID { get; set; }
         public string? ItemName { get; set; }
         public int StockQuantity { get; set; }
         public decimal Price { get; set; }
@@ -19,9 +18,9 @@ namespace Eletronic_Api.Model
 
         public bool IsActive { get; set; }
 
-        public Promotion? Promotion { get; set; }
         public Brand? Brand { get; set; }
         public Category? Category { get; set; }
+        public ICollection<ItemDetail>? ItemDetails { get; set; }   
 
     }
 }

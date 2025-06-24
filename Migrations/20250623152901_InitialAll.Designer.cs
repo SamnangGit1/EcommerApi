@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eletronic_Api.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20250609094717_InitailAll")]
-    partial class InitailAll
+    [Migration("20250623152901_InitialAll")]
+    partial class InitialAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,29 @@ namespace Eletronic_Api.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("Eletronic_Api.Model.AppUser", b =>
+                {
+                    b.Property<int>("AppUserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Profile")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("AppUserID");
+
+                    b.ToTable("AppUsers");
+                });
 
             modelBuilder.Entity("Eletronic_Api.Model.Brand", b =>
                 {
@@ -127,9 +150,6 @@ namespace Eletronic_Api.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<int>("PromotionID")
-                        .HasColumnType("int");
-
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
 
@@ -139,9 +159,63 @@ namespace Eletronic_Api.Migrations
 
                     b.HasIndex("CategoryID");
 
+                    b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.ItemDetail", b =>
+                {
+                    b.Property<int>("ItemDetailID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("DiscountPercent")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("ItemID")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double");
+
+                    b.Property<int>("PromotionID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ItemDetailID");
+
+                    b.HasIndex("ItemID");
+
                     b.HasIndex("PromotionID");
 
-                    b.ToTable("Items");
+                    b.ToTable("ItemDetails");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.OtpStore", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ExpiryTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Otp")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OtpStores");
                 });
 
             modelBuilder.Entity("Eletronic_Api.Model.Promotion", b =>
@@ -160,18 +234,12 @@ namespace Eletronic_Api.Migrations
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("PromotionName")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("PromotionID");
 
@@ -192,15 +260,26 @@ namespace Eletronic_Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.ItemDetail", b =>
+                {
+                    b.HasOne("Eletronic_Api.Model.Item", "Item")
+                        .WithMany("ItemDetails")
+                        .HasForeignKey("ItemID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Eletronic_Api.Model.Promotion", "Promotion")
-                        .WithMany("Items")
+                        .WithMany("ItemDetails")
                         .HasForeignKey("PromotionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Brand");
-
-                    b.Navigation("Category");
+                    b.Navigation("Item");
 
                     b.Navigation("Promotion");
                 });
@@ -215,9 +294,14 @@ namespace Eletronic_Api.Migrations
                     b.Navigation("Items");
                 });
 
+            modelBuilder.Entity("Eletronic_Api.Model.Item", b =>
+                {
+                    b.Navigation("ItemDetails");
+                });
+
             modelBuilder.Entity("Eletronic_Api.Model.Promotion", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("ItemDetails");
                 });
 #pragma warning restore 612, 618
         }
