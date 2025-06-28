@@ -1,6 +1,7 @@
 ﻿using Eletronic_Api.Data;
 using Eletronic_Api.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,6 +38,42 @@ namespace Eletronic_Api.Controllers
             }
             return Ok(promotion);
         }
+
+        [HttpGet("active-promotions")]
+        public IActionResult GetActivePromotions()
+        {
+            var currentDate = DateTime.Now;
+
+            var promotions = _dbcontext.ItemDetails
+                .Include(d => d.Promotion)
+                .Include(d => d.Item)
+                .Where(d =>
+                    d.IsActive &&
+                    d.Promotion != null &&
+                    d.Item != null &&
+                    d.StartDate <= currentDate &&
+                    d.EndDate >= currentDate
+                )
+                .Select(d => new
+                {
+                    Title = d.Promotion.PromotionName,
+                    Message = d.Promotion.Description,
+                    Discount = d.DiscountPercent,
+                    ItemName = d.Item.ItemName,
+                    StartDate = d.StartDate.ToString("dd/MM/yyyy"),
+                    EndDate = d.EndDate.ToString("dd/MM/yyyy"),
+                    DurationInDays = EF.Functions.DateDiffDay(d.StartDate, d.EndDate),
+                    DurationInMonths = EF.Functions.DateDiffMonth(d.StartDate, d.EndDate),
+
+                    // 📆 Check if today is within the range
+                    IsActiveNow = DateTime.Now >= d.StartDate && DateTime.Now <= d.EndDate,
+                    ViewCount = 1 // placeholder if you don't track yet
+                })
+                .ToList();
+
+            return Ok(promotions);
+        }
+
 
         [HttpPost]
         public IActionResult Post([FromForm] Promotion promotion)
