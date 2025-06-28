@@ -46,6 +46,50 @@ namespace Eletronic_Api.Controllers
                 .ToList();
             return Ok(items);
         }
+        [HttpGet("all-item-promotions")]
+        public IActionResult GetItemsWithPromotions(int? brandId = null, int? categoryId = null)
+        {
+            var currentDate = DateTime.Now;
+
+            var query = _dbcontext.Items
+                .Include(i => i.ItemDetails!)
+                    .ThenInclude(d => d.Promotion)
+                .Where(i => i.IsActive);
+
+            if (brandId.HasValue)
+                query = query.Where(i => i.BrandID == brandId.Value);
+
+            if (categoryId.HasValue)
+                query = query.Where(i => i.CategoryID == categoryId.Value);
+
+            var result = query.Select(item => new
+            {
+                ItemID = item.ItemID,
+                ItemName = item.ItemName,
+                BrandID = item.BrandID,
+                CategoryID = item.CategoryID,
+                Price = item.Price,
+
+                Promotion = item.ItemDetails
+                    .Where(d =>
+                        d.IsActive &&
+                        d.StartDate <= currentDate &&
+                        d.EndDate >= currentDate &&
+                        d.Promotion != null &&
+                        d.Promotion.IsActive
+                    )
+                    .Select(d => new
+                    {
+                        d.Promotion!.PromotionName,
+                        d.DiscountPercent,
+                        DiscountedPrice = item.Price * (1 - (decimal)d.DiscountPercent / 100) 
+                    })
+                    .FirstOrDefault()
+            }).ToList();
+
+            return Ok(result);
+        }
+
 
         [HttpGet]
         public IActionResult Index()
