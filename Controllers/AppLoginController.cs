@@ -68,24 +68,33 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromForm] AppUser appUser)
+        public IActionResult Register([FromBody] AppUser appUser)
         {
-            if (appUser.ProfileFile != null)
-            {
-                var fileResult = _fileService.SaveImage(appUser.ProfileFile);
-                if (fileResult.Item1 != 1)
-                    return BadRequest(new { message = "Image save failed" });
-                appUser.Profile = fileResult.Item2;
-            }
-            else
-            {
-                appUser.Profile = "/default.jpg";
-            }
+            if (string.IsNullOrWhiteSpace(appUser.Email))
+                return BadRequest(new { message = "Email is required." });
+
+            if (string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.Password))
+                return BadRequest(new { message = "Username and password are required." });
+
+            appUser.Profile = "/default.jpg";
+            appUser.IsVerified = false;
 
             _context.AppUsers.Add(appUser);
             _context.SaveChanges();
 
-            return Ok(new { Message = "User registered successfully" });
+            var otp = new Random().Next(100000, 999999).ToString();
+
+            _context.OtpStores.Add(new OtpStore
+            {
+                Email = appUser.Email,
+                Otp = otp,
+                ExpiryTime = DateTime.Now.AddMinutes(5)
+            });
+            _context.SaveChanges();
+
+            _emailService.SendOtp(appUser.Email, otp);
+
+            return Ok(new { message = "Registered successfully. OTP sent to email." });
         }
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromForm] AppUser appUser)
@@ -111,6 +120,7 @@ namespace Eletronic_Api.Controllers
 
             return Ok(new { Message = "User updated successfully" });
         }
+
         [HttpPost("send-otp")]
         public IActionResult SendOtp([FromBody] AppUser request)
         {
@@ -130,6 +140,7 @@ namespace Eletronic_Api.Controllers
             _emailService.SendOtp(request.Email, otp);
             return Ok("OTP sent to email");
         }
+
         [HttpPost("verify-otp")]
         public IActionResult VerifyOtp([FromBody] OtpVerifyRequest request)
         {

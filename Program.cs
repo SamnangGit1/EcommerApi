@@ -61,6 +61,11 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    options.ListenAnyIP(7151); 
+//});
+
 
 var app = builder.Build();
 

@@ -11,6 +11,7 @@ namespace Eletronic_Api.Model
         public string? Profile { get; set; }
         [NotMapped]
         public IFormFile? ProfileFile { get; set; }
-
+     
+        public bool IsVerified { get; set; }
     }
 }
