@@ -18,30 +18,25 @@ namespace Eletronic_Api.Data
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<ItemDetail> ItemDetails { get; set; }
-
+ 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             modelBuilder.Entity<Item>()
-           .HasOne(s => s.Category)
-           .WithMany(g => g.Items)
-           .HasForeignKey(s => s.CategoryID);
+              .HasOne(i => i.Category)
+              .WithMany(c => c.Items)
+              .HasForeignKey(i => i.CategoryID)
+              .OnDelete(DeleteBehavior.Restrict);
+
+            
             modelBuilder.Entity<Item>()
-                .HasOne(s => s.Brand)
-                .WithMany(g => g.Items)
-                .HasForeignKey(s => s.BrandID);
-            modelBuilder.Entity<ItemDetail>()
-                .HasOne(i=>i.Item)
-                .WithMany(id => id.ItemDetails)
-                .HasForeignKey(i => i.ItemID);
-            modelBuilder.Entity<ItemDetail>()
-                .HasOne(p=> p.Promotion)
-                .WithMany(p => p.ItemDetails)
-                .HasForeignKey(p => p.PromotionID);
-    
+                .HasOne(i => i.Brand)
+                .WithMany(b => b.Items)
+                .HasForeignKey(i => i.BrandID)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
         }
     }

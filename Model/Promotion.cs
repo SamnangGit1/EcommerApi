@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eletronic_Api.Model
 {
@@ -6,19 +7,28 @@ namespace Eletronic_Api.Model
     {
         [Key]
         public int PromotionID { get; set; }
+        public int TargetID { get; set; }
 
         [Required]
-        public string?   PromotionName { get; set; }
+        public string? PromotionType { get; set; }
 
-        [Required]
-        public string? DiscountType { get; set; }
-
-        [Required]
-        public decimal DiscountValue { get; set; }
-
+        public string? PromotionName { get; set; }
         public string? Description { get; set; }
-
+        public decimal DiscountPercents { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
-        public ICollection<ItemDetail>? ItemDetails { get; set; }
+        public bool AlertNotification { get; set; }
+
+
+        [ForeignKey("TargetID")]
+        public Item? Item { get; set; }
+
+        [ForeignKey("TargetID")]
+        public Brand? Brand { get; set; }
+
+        [ForeignKey("TargetID")]
+        public Category? Category { get; set; }
+
     }
 }
