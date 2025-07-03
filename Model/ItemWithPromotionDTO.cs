@@ -11,6 +11,7 @@
         public bool ItemIsActive { get; set; }
 
         public string? PromotionName { get; set; }
+        public string? PromotionType { get; set; }
         public decimal? DiscountPercents { get; set; }
         public string? PromotionDescription { get; set; }
         public DateTime? StartDate { get; set; }
