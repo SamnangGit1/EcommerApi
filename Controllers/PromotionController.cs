@@ -133,6 +133,7 @@ namespace Eletronic_Api.Controllers
                     ItemIsActive = i.IsActive,
                     PromotionType = promo?.PromotionType,
                     PromotionName = promo?.PromotionName,
+                    PromotionType = promo?.PromotionType,
                     DiscountPercents = promo?.DiscountPercents,
                     PromotionDescription = promo?.Description,
                     StartDate = promo?.StartDate,
