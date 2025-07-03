@@ -68,7 +68,7 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] AppUser appUser)
+        public async Task<IActionResult> Register([FromForm] AppUser appUser)
         {
             if (string.IsNullOrWhiteSpace(appUser.Email))
                 return BadRequest(new { message = "Email is required." });
@@ -76,11 +76,26 @@ namespace Eletronic_Api.Controllers
             if (string.IsNullOrWhiteSpace(appUser.UserName) || string.IsNullOrWhiteSpace(appUser.Password))
                 return BadRequest(new { message = "Username and password are required." });
 
-            appUser.Profile = "/default.jpg";
+            // Save image if provided
+            if (appUser.ProfileFile != null)
+            {
+                var fileResult = _fileService.SaveImage(appUser.ProfileFile);
+                if (fileResult.Item1 != 1)
+                    return BadRequest(new { message = "Image save failed" });
+
+                appUser.Profile = fileResult.Item2; 
+            }
+            else
+            {
+              
+                appUser.Profile = "/userDefault.png";
+            }
+
             appUser.IsVerified = false;
+        
 
             _context.AppUsers.Add(appUser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             var otp = new Random().Next(100000, 999999).ToString();
 
@@ -90,12 +105,13 @@ namespace Eletronic_Api.Controllers
                 Otp = otp,
                 ExpiryTime = DateTime.Now.AddMinutes(5)
             });
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             _emailService.SendOtp(appUser.Email, otp);
 
             return Ok(new { message = "Registered successfully. OTP sent to email." });
         }
+
         [HttpPut("{id}")]
         public IActionResult UpdateUser(int id, [FromForm] AppUser appUser)
         {

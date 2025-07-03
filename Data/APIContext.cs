@@ -18,7 +18,8 @@ namespace Eletronic_Api.Data
 
         public DbSet<Item> Items { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
- 
+        public DbSet<User> Users { get; set; }
+        public DbSet<Userpermission> UserPermissions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,6 +37,11 @@ namespace Eletronic_Api.Data
                 .WithMany(b => b.Items)
                 .HasForeignKey(i => i.BrandID)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Userpermission>()
+                .HasOne(up => up.Users)
+                .WithMany(u => u.UserPermissions)
+                .HasForeignKey(up => up.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
         }

@@ -131,7 +131,7 @@ namespace Eletronic_Api.Controllers
                     StockQuantity = i.StockQuantity,
                     Price = i.Price,
                     ItemIsActive = i.IsActive,
-
+                    PromotionType = promo?.PromotionType,
                     PromotionName = promo?.PromotionName,
                     DiscountPercents = promo?.DiscountPercents,
                     PromotionDescription = promo?.Description,
