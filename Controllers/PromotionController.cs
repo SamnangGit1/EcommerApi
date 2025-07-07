@@ -34,20 +34,32 @@ namespace Eletronic_Api.Controllers
             return Ok(promotion);
         }
 
-  
-      
+        // this code add promotion only one promotion 
+        //[HttpPost]
+        //public IActionResult Post([FromBody] Promotion promotion)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-        [HttpPost]
-        public IActionResult Post([FromBody] Promotion promotion)
+        //    _dbcontext.Add(promotion);
+        //    _dbcontext.SaveChanges();
+        //    return Ok(new { message = "Promotion Added Successfully" });
+        //}
+        //this code can add multiple promotions at once
+        [HttpPost("multiple")]
+        public IActionResult PostMultiple([FromBody] List<Promotion> promotions)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _dbcontext.Add(promotion);
+            _dbcontext.Promotions.AddRange(promotions);
             _dbcontext.SaveChanges();
-            return Ok(new { message = "Promotion Added Successfully" });
+
+            return Ok(new { message = " Multiple promotions added successfully!" });
         }
 
         [HttpPut("{id}")]
