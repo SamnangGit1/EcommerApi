@@ -9,7 +9,7 @@ namespace Eletronic_Api.Model
         public int PromotionID { get; set; }
         public int TargetID { get; set; }
 
-        [Required]
+       // [Required]
         public string? PromotionType { get; set; }
 
         public string? PromotionName { get; set; }
@@ -20,14 +20,13 @@ namespace Eletronic_Api.Model
         public bool IsActive { get; set; }
         public bool AlertNotification { get; set; }
 
-
-        [ForeignKey("TargetID")]
+        [NotMapped]
         public Item? Item { get; set; }
 
-        [ForeignKey("TargetID")]
+        [NotMapped]
         public Brand? Brand { get; set; }
 
-        [ForeignKey("TargetID")]
+        [NotMapped]
         public Category? Category { get; set; }
 
     }

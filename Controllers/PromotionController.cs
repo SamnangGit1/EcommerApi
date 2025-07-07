@@ -38,7 +38,7 @@ namespace Eletronic_Api.Controllers
       
 
         [HttpPost]
-        public IActionResult Post([FromForm] Promotion promotion)
+        public IActionResult Post([FromBody] Promotion promotion)
         {
             if (!ModelState.IsValid)
             {
@@ -132,8 +132,7 @@ namespace Eletronic_Api.Controllers
                     Price = i.Price,
                     ItemIsActive = i.IsActive,
                     PromotionType = promo?.PromotionType,
-                    PromotionName = promo?.PromotionName,
-                    PromotionType = promo?.PromotionType,
+                    PromotionName = promo?.PromotionName,             
                     DiscountPercents = promo?.DiscountPercents,
                     PromotionDescription = promo?.Description,
                     StartDate = promo?.StartDate,
@@ -145,7 +144,60 @@ namespace Eletronic_Api.Controllers
 
             return Ok(result);
         }
+        [HttpGet("list-promotions")]
+        public async Task<IActionResult> GetOnlyItemsWithPromotions()
+        {
+            var items = await _dbcontext.Items
+                .Include(i => i.Brand)
+                .Include(i => i.Category)
+                .ToListAsync();
 
+            var promotions = await _dbcontext.Promotions
+                .Where(p => p.IsActive)
+                .ToListAsync();
+
+            var result = new List<ItemWithPromotionDTO>();
+
+            foreach (var item in items)
+            {
+                // ជ្រើស promotion ដែលត្រូវគ្នា
+                var applicablePromotions = promotions.Where(p =>
+                    (p.PromotionType == "Item" && p.TargetID == item.ItemID) ||
+                    (p.PromotionType == "Brand" && p.TargetID == item.BrandID) ||
+                    (p.PromotionType == "Category" && p.TargetID == item.CategoryID) ||
+                    (p.PromotionType == "All")
+                ).ToList();
+
+                // ប្រសិនបើមាន promotion ត្រឹមតែ១ ឬច្រើន អ្នកអាចជ្រើសមួយឬបញ្ចូលច្រើន
+                foreach (var promotion in applicablePromotions)
+                {
+                    result.Add(new ItemWithPromotionDTO
+                    {
+                        ItemID = item.ItemID,
+                        ItemName = item.ItemName,
+                        BrandName = item.Brand?.BrandName,
+                        CategoryName = item.Category?.CategoryName,
+                        StockQuantity = item.StockQuantity,
+                        Price = item.Price,
+                        ItemIsActive = item.IsActive,
+
+                        PromotionName = promotion.PromotionName,
+                        PromotionType = promotion.PromotionType,
+                        DiscountPercents = promotion.DiscountPercents,
+                        PromotionDescription = promotion.Description,
+                        StartDate = promotion.StartDate,
+                        EndDate = promotion.EndDate,
+                        PromotionIsActive = promotion.IsActive,
+                        AlertNotification = promotion.AlertNotification
+                    });
+                }
+            }
+
+            return Ok(result);
+        }
 
     }
+
+
 }
+
