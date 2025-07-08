@@ -27,6 +27,14 @@ namespace Eletronic_Api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "varchar(400)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Phone = table.Column<string>(type: "varchar(50)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Address = table.Column<string>(type: "varchar(500)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    AddressType = table.Column<string>(type: "varchar(200)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    HouseNo = table.Column<string>(type: "varchar(500)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Profile = table.Column<string>(type: "varchar(100)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsVerified = table.Column<bool>(type: "tinyint(1)", nullable: false)

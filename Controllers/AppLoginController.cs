@@ -30,6 +30,16 @@ namespace Eletronic_Api.Controllers
             _emailService = emailService;
         
         }
+        [HttpGet("get-all-users")]
+        public IActionResult GetAllUsers()
+        {
+            var users = _context.AppUsers.ToList();
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(users);
+        }
 
         [HttpPost()]
         public IActionResult Login([FromBody] AppUser request)
@@ -62,8 +72,13 @@ namespace Eletronic_Api.Controllers
                 token = jwt,
                 username = user.UserName,
                 email = user.Email,
-                profile = user.Profile
-               
+                profile = user.Profile,
+                userID=user.AppUserID,
+                address = user.Address,
+                addressType = user.AddressType,
+                houseNo = user.HouseNo,
+
+
             });
         }
 
