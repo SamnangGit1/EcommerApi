@@ -109,53 +109,53 @@ namespace Eletronic_Api.Controllers
 
             return Ok(promotions);
         }
-        [HttpGet("items-with-promotions")]
+        //[HttpGet("items-with-promotions")]
       
-        public async Task<ActionResult<IEnumerable<ItemWithPromotionDTO>>> GetItemsWithPromotions()
-        {
-            var items = await _dbcontext.Items
-                .Include(i => i.Brand)
-                .Include(i => i.Category)
-                .ToListAsync();
+        //public async Task<ActionResult<IEnumerable<ItemWithPromotionDTO>>> GetItemsWithPromotions()
+        //{
+        //    var items = await _dbcontext.Items
+        //        .Include(i => i.Brand)
+        //        .Include(i => i.Category)
+        //        .ToListAsync();
 
-            var promotions = await _dbcontext.Promotions
-                .Where(p => p.IsActive)
-                .ToListAsync();
+        //    var promotions = await _dbcontext.Promotions
+        //        .Where(p => p.IsActive)
+        //        .ToListAsync();
 
-            var result = items.Select(i =>
-            {
-                var itemPromo = promotions.FirstOrDefault(p => p.PromotionType == "Item" && p.TargetID == i.ItemID);
-                var categoryPromo = promotions.FirstOrDefault(p => p.PromotionType == "Category" && p.TargetID == i.CategoryID);
+        //    var result = items.Select(i =>
+        //    {
+        //        var itemPromo = promotions.FirstOrDefault(p => p.PromotionType == "Item" && p.TargetID == i.ItemID);
+        //        var categoryPromo = promotions.FirstOrDefault(p => p.PromotionType == "Category" && p.TargetID == i.CategoryID);
               
-                var brandPromo = promotions.FirstOrDefault(p => p.PromotionType == "Brand" && p.TargetID == i.BrandID);
-                var promo = itemPromo ?? categoryPromo ?? brandPromo;
-                if (promo == null)
-                {
-                    promo = promotions.FirstOrDefault(p => p.PromotionType == "All");
-                }
+        //        var brandPromo = promotions.FirstOrDefault(p => p.PromotionType == "Brand" && p.TargetID == i.BrandID);
+        //        var promo = itemPromo ?? categoryPromo ?? brandPromo;
+        //        if (promo == null)
+        //        {
+        //            promo = promotions.FirstOrDefault(p => p.PromotionType == "All");
+        //        }
 
-                return new ItemWithPromotionDTO
-                {
-                    ItemID = i.ItemID,
-                    ItemName = i.ItemName,
-                    BrandName = i.Brand?.BrandName,
-                    CategoryName = i.Category?.CategoryName,
-                    StockQuantity = i.StockQuantity,
-                    Price = i.Price,
-                    ItemIsActive = i.IsActive,
-                    PromotionType = promo?.PromotionType,
-                    PromotionName = promo?.PromotionName,             
-                    DiscountPercents = promo?.DiscountPercents,
-                    PromotionDescription = promo?.Description,
-                    StartDate = promo?.StartDate,
-                    EndDate = promo?.EndDate,
-                    PromotionIsActive = promo?.IsActive,
-                    AlertNotification = promo?.AlertNotification
-                };
-            }).ToList();
+        //        return new ItemWithPromotionDTO
+        //        {
+        //            ItemID = i.ItemID,
+        //            ItemName = i.ItemName,
+        //            BrandName = i.Brand?.BrandName,
+        //            CategoryName = i.Category?.CategoryName,
+        //            StockQuantity = i.StockQuantity,
+        //            Price = i.Price,
+        //            ItemIsActive = i.IsActive,
+        //            PromotionType = promo?.PromotionType,
+        //            PromotionName = promo?.PromotionName,             
+        //            DiscountPercents = promo?.DiscountPercents,
+        //            PromotionDescription = promo?.Description,
+        //            StartDate = promo?.StartDate,
+        //            EndDate = promo?.EndDate,
+        //            PromotionIsActive = promo?.IsActive,
+        //            AlertNotification = promo?.AlertNotification
+        //        };
+        //    }).ToList();
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
         [HttpGet("list-promotions")]
         public async Task<IActionResult> GetOnlyItemsWithPromotions()
         {

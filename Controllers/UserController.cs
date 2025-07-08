@@ -29,6 +29,16 @@ namespace Eletronic_Api.Controllers
             _fileService = fileService;
 
         }
+        [HttpGet]
+        public IActionResult Index()
+        {
+            var users = _context.Users.ToList();
+            if (users == null || !users.Any())
+            {
+                return NotFound("No users found.");
+            }
+            return Ok(users);
+        }
 
         [HttpPost()]
         public IActionResult Login([FromBody] User request)
@@ -66,7 +76,8 @@ namespace Eletronic_Api.Controllers
                 username = user.UserName,
                 usertime = user.UserTime.ToString("yyyy-MM-dd HH:mm:ss"),
                 profile = user.Profile,
-                isAdmin = user.IsAdmin
+                isAdmin = user.IsAdmin,
+                userID = user.UserID
             });
         }
 
@@ -130,7 +141,7 @@ namespace Eletronic_Api.Controllers
                 existingUser.Profile = fileResult.Item2;
             }
             
-            _context.Add(User);
+            _context.Users.Update(existingUser);
             _context.SaveChanges();
           
 
