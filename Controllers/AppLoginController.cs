@@ -152,6 +152,19 @@ namespace Eletronic_Api.Controllers
             return Ok(new { Message = "User updated successfully" });
         }
 
+        [HttpPut("update-info/{id}")]
+        public IActionResult UpdatInfo(int id, [FromBody] AppUser appUser)
+        {
+            var existingUser = _context.AppUsers.Find(id);
+            if (existingUser == null)
+                return NotFound("User not found");
+           existingUser .Phone = appUser.Phone;
+            existingUser.Address = appUser.Address;
+            existingUser.AddressType = appUser.AddressType;
+            existingUser.HouseNo = appUser.HouseNo;
+            _context.SaveChanges();
+            return Ok(new { Message = "User information updated successfully" });
+        }
         [HttpPost("send-otp")]
         public IActionResult SendOtp([FromBody] AppUser request)
         {

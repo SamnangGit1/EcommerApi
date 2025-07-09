@@ -17,6 +17,6 @@ namespace Eletronic_Api.Model
         public IFormFile? ProfileFile { get; set; }
      
         public bool IsVerified { get; set; }
-        public DateTime UserTime { get; internal set; }
+      
     }
 }
