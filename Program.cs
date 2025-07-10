@@ -51,6 +51,7 @@ builder.Services.AddTransient<IItemRepository, ItemRepository>();
 builder.Services.AddTransient<IAppUserRepository, AppUserRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddTransient<IStaffRepository, StaffRepository>();
 
 
 builder.Services.AddAuthorization();

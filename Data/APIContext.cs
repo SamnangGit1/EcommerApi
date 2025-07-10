@@ -20,7 +20,7 @@ namespace Eletronic_Api.Data
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Userpermission> UserPermissions { get; set; }
-
+        public DbSet<Staff> staffs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

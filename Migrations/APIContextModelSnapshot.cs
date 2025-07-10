@@ -52,9 +52,6 @@ namespace Eletronic_Api.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("UserTime")
-                        .HasColumnType("datetime(6)");
-
                     b.HasKey("AppUserID");
 
                     b.ToTable("AppUsers");
@@ -233,6 +230,47 @@ namespace Eletronic_Api.Migrations
                     b.HasKey("PromotionID");
 
                     b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.Staff", b =>
+                {
+                    b.Property<int>("StaffID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("HiredDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Profile")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Sex")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("StaffName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("StaffID");
+
+                    b.ToTable("staffs");
                 });
 
             modelBuilder.Entity("Eletronic_Api.Model.User", b =>

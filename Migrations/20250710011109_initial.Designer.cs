@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eletronic_Api.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20250702153058_initial_all-tb")]
-    partial class initial_alltb
+    [Migration("20250710011109_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,13 +28,25 @@ namespace Eletronic_Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AddressType")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("HouseNo")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsVerified")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Profile")
@@ -210,7 +222,6 @@ namespace Eletronic_Api.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("PromotionType")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("StartDate")
@@ -221,9 +232,93 @@ namespace Eletronic_Api.Migrations
 
                     b.HasKey("PromotionID");
 
-                    b.HasIndex("TargetID");
-
                     b.ToTable("Promotions");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.Staff", b =>
+                {
+                    b.Property<int>("StaffID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("HiredDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Profile")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("Sex")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("StaffName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("StaffID");
+
+                    b.ToTable("staffs");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.User", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Profile")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UserTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.Userpermission", b =>
+                {
+                    b.Property<int>("UserPermissionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("PermissionName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserPermissionID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("UserPermissions");
                 });
 
             modelBuilder.Entity("Eletronic_Api.Model.Item", b =>
@@ -245,31 +340,15 @@ namespace Eletronic_Api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Eletronic_Api.Model.Promotion", b =>
+            modelBuilder.Entity("Eletronic_Api.Model.Userpermission", b =>
                 {
-                    b.HasOne("Eletronic_Api.Model.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("TargetID")
+                    b.HasOne("Eletronic_Api.Model.User", "Users")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Eletronic_Api.Model.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("TargetID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Eletronic_Api.Model.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("TargetID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Item");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Eletronic_Api.Model.Brand", b =>
@@ -280,6 +359,11 @@ namespace Eletronic_Api.Migrations
             modelBuilder.Entity("Eletronic_Api.Model.Category", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Eletronic_Api.Model.User", b =>
+                {
+                    b.Navigation("UserPermissions");
                 });
 #pragma warning restore 612, 618
         }
