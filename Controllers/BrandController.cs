@@ -14,7 +14,7 @@ namespace Eletronic_Api.Controllers
         private readonly APIContext _dbcontext;
         private readonly IFileService _fileService;
         private readonly IBrandRepository _brandRepository;
-        public BrandController(IFileService fileService,IBrandRepository brandRepository , APIContext dbcontext)
+        public BrandController(IFileService fileService, IBrandRepository brandRepository, APIContext dbcontext)
         {
             _dbcontext = dbcontext;
 
@@ -23,9 +23,9 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpGet]
-       public IActionResult index()
+        public IActionResult index()
         {
-            var brand=_dbcontext.Brands.ToList();
+            var brand = _dbcontext.Brands.ToList();
             return Ok(brand);
         }
         [HttpGet("{id}/Images")]
@@ -40,7 +40,7 @@ namespace Eletronic_Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id )
+        public IActionResult Get(int id)
         {
             var brand = _dbcontext.Brands.FirstOrDefault(b => b.BrandID == id);
             if (brand == null)
@@ -73,17 +73,17 @@ namespace Eletronic_Api.Controllers
             }
             _dbcontext.Brands.Add(brand);
             _dbcontext.SaveChanges();
-            return Ok(new {message = "Brand added successfully" });  
-        }   
+            return Ok(new { message = "Brand added successfully" });
+        }
 
-     
+
         [HttpPut("{id}")]
-        public IActionResult Put(int id ,[FromForm] Brand brand)
+        public IActionResult Put(int id, [FromForm] Brand brand)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingBrand= _dbcontext.Brands.FirstOrDefault(i => i.BrandID == id);
+            var existingBrand = _dbcontext.Brands.FirstOrDefault(i => i.BrandID == id);
             if (existingBrand == null)
                 return NotFound(new { message = "Brand not found" });
             if (brand.ImageFile != null)
@@ -115,5 +115,33 @@ namespace Eletronic_Api.Controllers
             _dbcontext.SaveChanges();
             return Ok(new { message = "Brand deleted successfully" });
         }
+        [HttpGet("image/{imageName}")]
+        public IActionResult GetbyImage(string imageName)
+        {
+            try
+            {
+                var brand = _dbcontext.Brands.FirstOrDefault(b => b.Image == imageName);
+                if (brand == null)
+                {
+                    return NotFound(new { message = "Brand not found with image name" });
+                }
+
+                var imageUrl = $"{Request.Scheme}://{Request.Host}/Images/{brand.Image}";
+
+                return Ok(new
+                {
+                    brand.BrandID,
+                    brand.BrandName,
+                    brand.Image,
+                    imageUrl
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log error here or debug breakpoint
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
     }
 }
