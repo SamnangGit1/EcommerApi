@@ -18,5 +18,6 @@ namespace Eletronic_Api.Model
      
         public bool IsVerified { get; set; }
         public ICollection<ItemCard>? ItemCards { get; set; }
+        public ICollection<Order>? orders { get; set; }
     }
 }

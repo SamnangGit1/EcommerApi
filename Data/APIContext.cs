@@ -22,6 +22,8 @@ namespace Eletronic_Api.Data
         public DbSet<Userpermission> UserPermissions { get; set; }
         public DbSet<Staff> staffs { get; set; }
         public DbSet<ItemCard> ItemCards { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +55,26 @@ namespace Eletronic_Api.Data
                 .HasOne(ic => ic.AppUser)
                 .WithMany(p => p.ItemCards)
                 .HasForeignKey(ic => ic.AppUserID);
+            modelBuilder.Entity<OrderDetail>()
+               .HasOne(od => od.Item)
+               .WithMany(i => i.OrderDetails)
+               .HasForeignKey(od => od.ItemID)
+               .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Order)
+                .WithMany(o => o.OrderDetails)
+                .HasForeignKey(od => od.OrderID)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.AppUser)
+                .WithMany(a => a.orders)
+                .HasForeignKey(o => o.AppUserID)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Staff)
+                .WithMany(s => s.orders)
+                .HasForeignKey(o => o.StuffID)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
         }

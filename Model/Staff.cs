@@ -16,6 +16,7 @@ namespace Eletronic_Api.Model
         public string? Profile { get; set; }
         [NotMapped]
         public IFormFile? ProfileFile { get; set; } 
-        public bool IsActive { get; set; } 
+        public bool IsActive { get; set; }
+        public ICollection<Order>? orders { get; set; }
     }
 }

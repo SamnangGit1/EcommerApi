@@ -21,6 +21,7 @@ namespace Eletronic_Api.Model
         public Brand? Brand { get; set; }
         public Category? Category { get; set; }
         public ICollection<ItemCard>? ItemCards { get; set; }
+        public ICollection<OrderDetail>? OrderDetails { get; set; }
 
 
     }
