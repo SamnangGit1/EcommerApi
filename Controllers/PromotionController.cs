@@ -161,6 +161,96 @@ namespace Eletronic_Api.Controllers
 
             return Ok(result);
         }
+        
+      
+        [HttpGet("promotion-category")]
+        public async Task<IActionResult> GetItemsWithCategoryPromotion()
+        {
+            var items = await _dbcontext.Items
+                .Where(i => i.IsActive &&
+                            _dbcontext.Promotions.Any(p =>
+                                p.PromotionType == "Category" &&
+                                p.IsActive &&
+                                p.TargetID == i.CategoryID))
+                .Select(i => new
+                {
+                    ItemID = i.ItemID,
+                    ItemName = i.ItemName,
+                    BrandName = i.Brand!.BrandName,
+                    CategoryName = i.Category!.CategoryName,
+                    StockQuantity = i.StockQuantity,
+                    Price = i.Price,
+                    ItemIsActive = i.IsActive,
+
+                
+                    Promotion = _dbcontext.Promotions
+                        .Where(p => p.PromotionType == "Category" &&
+                                    p.IsActive &&
+                                    p.TargetID == i.CategoryID)
+                        .OrderByDescending(p => p.StartDate)
+                        .Select(p => new {
+                            p.PromotionName,
+                            p.PromotionType,
+                            p.DiscountPercents,
+                            p.Description,
+                            p.StartDate,
+                            p.EndDate,
+                            p.IsActive,
+                            p.AlertNotification
+                        })
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+            
+
+
+            return Ok(items);
+        }
+
+        [HttpGet("promotion-brand")]
+        public async Task<IActionResult> GetItemsWithbrandPromotion()
+        {
+            var items = await _dbcontext.Items
+                .Where(i => i.IsActive &&
+                            _dbcontext.Promotions.Any(p =>
+                                p.PromotionType == "Brand" &&
+                                p.IsActive &&
+                                p.TargetID == i.BrandID))
+                .Select(i => new
+                {
+                    ItemID = i.ItemID,
+                    ItemName = i.ItemName,
+                    CategoryName = i.Category!.CategoryName,
+                   BrandName = i.Brand!.BrandName,
+                    StockQuantity = i.StockQuantity,
+                    Price = i.Price,
+                    ItemIsActive = i.IsActive,
+
+
+                    Promotion = _dbcontext.Promotions
+                        .Where(p => p.PromotionType == "Brand" &&
+                                    p.IsActive &&
+                                    p.TargetID == i.BrandID)
+                        .OrderByDescending(p => p.StartDate)
+                        .Select(p => new {
+                            p.PromotionName,
+                            p.PromotionType,
+                            p.DiscountPercents,
+                            p.Description,
+                            p.StartDate,
+                            p.EndDate,
+                            p.IsActive,
+                            p.AlertNotification
+                        })
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+
+
+            return Ok(items);
+        }
+
 
     }
 
